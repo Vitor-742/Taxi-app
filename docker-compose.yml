@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  app:
+    image: node:18  # Mudar versao do node
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm start"
+    ports:
+      - "8080:8080"
