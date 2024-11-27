@@ -1,22 +1,26 @@
-import { ModelStatic } from 'sequelize'
-import Driver from '../database/models/Driver'
-import resp from '../utils/resp';
 import DriverService from './driver.service';
 import RoutesService from './routes.service';
-import { IAPIResponse, IEstimate } from '../protocols';
+import { IAPIResponse, IConfirm, ICustomError, IEstimate } from '../protocols';
+import resp from '../utils/resp';
+import errorRespStatus from '../utils/errorRespStatus';
+import { StatusCodes } from 'http-status-codes';
+import TravelService from './travel.service';
+import UserService from './user.service';
 
 class RideService {
     private driverService = new DriverService();
+    private travelService = new TravelService();
+    private userService = new UserService();
 
     async estimate(data: IEstimate) {
         const routesService = new RoutesService();
-
+        
         try {
 
             // API Response
             const APIMapsResponse: IAPIResponse = await routesService.getRouteData(data);
 
-            // console.log(APIMapsResponse)
+            console.log(APIMapsResponse)
 
             const KMdistance = APIMapsResponse.distance / 1000
             // Get drivers
@@ -43,9 +47,41 @@ class RideService {
                 options: driversList,
             }
 
-            // console.log(response)
+            console.log(response)
 
             return response;
+
+        } catch (error) {
+            console.log(error)
+            throw(error)
+        }
+    }
+
+    async confirm(data: IConfirm) {
+        
+        try {
+
+            const KMdistance = data.distance / 1000
+
+            // Get drivers
+            const drivers = await this.driverService.getAll();
+
+            for (const driver of drivers) {
+                if (driver.id === data.driver.id) {
+
+                    if (driver.minimumDistance > KMdistance) {
+                        throw(errorRespStatus(StatusCodes.NOT_ACCEPTABLE, "INVALID_DISTANCE", "Invalid distance for driver")) as ICustomError;
+                    }
+
+                    await this.userService.checkUser(data.customer_id);
+
+                    await this.travelService.create(data);
+
+                    return { "success": true };
+                }
+            }
+
+            throw(errorRespStatus(StatusCodes.NOT_FOUND, "DRIVER_NOT_FOUND", "Driver not found")) as ICustomError;
 
         } catch (error) {
             console.log(error)

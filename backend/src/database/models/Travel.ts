@@ -63,11 +63,18 @@ Travel.init({
         type: sequelize.FLOAT,
         allowNull: false
       },
-      date: {
+      createdAt: {
         type: sequelize.DATE,
         allowNull: false,
-        defaultValue: sequelize.NOW
-      }
+        defaultValue: sequelize.NOW,
+        field: 'created_at',
+      },
+      updatedAt: {
+        type: sequelize.DATE,
+        allowNull: false,
+        defaultValue: sequelize.NOW,
+        field: 'updated_at',
+      },
   },
   {
     sequelize: db,

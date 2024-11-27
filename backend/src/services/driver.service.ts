@@ -5,6 +5,7 @@ class DriverService {
     private model: ModelStatic<Driver> = Driver;
 
     async getByKm(distance: number) {
+      try {
         const drivers = await this.model.findAll({
             where: {
                 minimumDistance: {
@@ -13,6 +14,16 @@ class DriverService {
             },
             order: [['fee', 'ASC']],
           });
+        return drivers
+        
+      } catch (error) {
+        console.log(error)
+        throw(error)
+      }
+    }
+    
+    async getAll() {
+        const drivers = await this.model.findAll();
         return drivers
     }
 }
