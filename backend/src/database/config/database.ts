@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { Options } from 'sequelize'
 
 const { DB_USER, DB_PASS, DB_NAME, DB_HOST } = process.env
