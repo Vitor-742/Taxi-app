@@ -14,6 +14,7 @@ class Travel extends Model {
     declare distance: number
     declare duration: string
     declare value: number
+    declare date: Date
 }
 
 Travel.init({
@@ -63,23 +64,16 @@ Travel.init({
         type: sequelize.FLOAT,
         allowNull: false
       },
-      createdAt: {
+      date: {
         type: sequelize.DATE,
         allowNull: false,
         defaultValue: sequelize.NOW,
-        field: 'created_at',
-      },
-      updatedAt: {
-        type: sequelize.DATE,
-        allowNull: false,
-        defaultValue: sequelize.NOW,
-        field: 'updated_at',
-      },
+      }
   },
   {
     sequelize: db,
     tableName: 'travel',
-    timestamps: true,
+    timestamps: false,
     underscored: true
   }
 )

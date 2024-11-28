@@ -1,12 +1,25 @@
 import { ModelStatic, Op } from 'sequelize'
 import Travel from '../database/models/Travel'
 import { IConfirm } from '../protocols';
+import Driver from '../database/models/Driver';
 
 class TravelService {
     private model: ModelStatic<Travel> = Travel;
 
-    async getAll() {
-        const travels = await this.model.findAll();
+    async getByCustomerId(customerId: string) {
+        const travels = await this.model.findAll({
+            include: [
+                {
+                  model: Driver,
+                  as: 'driver',
+                  attributes: ['id', 'name'],
+                },
+              ],
+            where: {
+                userId: customerId
+            },
+            order: [['date', 'DESC']]
+        });
         return travels
     }
 

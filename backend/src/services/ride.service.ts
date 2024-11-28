@@ -6,6 +6,7 @@ import errorRespStatus from '../utils/errorRespStatus';
 import { StatusCodes } from 'http-status-codes';
 import TravelService from './travel.service';
 import UserService from './user.service';
+import { date } from 'yup';
 
 class RideService {
     private driverService = new DriverService();
@@ -19,8 +20,6 @@ class RideService {
 
             // API Response
             const APIMapsResponse: IAPIResponse = await routesService.getRouteData(data);
-
-            console.log(APIMapsResponse)
 
             const KMdistance = APIMapsResponse.distance / 1000
             // Get drivers
@@ -46,8 +45,6 @@ class RideService {
                 ...APIMapsResponse,
                 options: driversList,
             }
-
-            console.log(response)
 
             return response;
 
@@ -82,6 +79,51 @@ class RideService {
             }
 
             throw(errorRespStatus(StatusCodes.NOT_FOUND, "DRIVER_NOT_FOUND", "Driver not found")) as ICustomError;
+
+        } catch (error) {
+            console.log(error)
+            throw(error)
+        }
+    }
+
+    async getTravels(customerId: string, driverId: string) {
+        
+        try {
+
+            const travels = await this.travelService.getByCustomerId(customerId);
+
+            if (travels.length == 0) {
+                throw(errorRespStatus(StatusCodes.NOT_FOUND, "NO_RIDES_FOUND", "rides not found")) as ICustomError;
+            }
+
+
+
+            if (driverId) {
+                const driver = await this.driverService.getById(driverId);
+    
+                if (!driver) {
+                    throw(errorRespStatus(StatusCodes.BAD_REQUEST, "INVALID_DRIVER", "Invalid driver id")) as ICustomError;
+                }
+
+                const filteredTravels = []
+                for (const travel of travels) {
+                    if (travel.driverId == driver.id) {
+                        filteredTravels.push(travel)
+                    }
+                }
+
+                if (filteredTravels.length == 0) {
+                    throw(errorRespStatus(StatusCodes.NOT_FOUND, "NO_RIDES_FOUND", "rides not found")) as ICustomError;
+                }
+
+                return filteredTravels;
+
+            }
+
+            // tirar os outros drivers da travels ou lancar outro erro
+
+
+            return travels;
 
         } catch (error) {
             console.log(error)

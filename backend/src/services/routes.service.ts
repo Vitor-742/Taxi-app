@@ -31,8 +31,8 @@ class RoutesService {
             const requestResult = {
               distance: responseLegs.distanceMeters,
               duration: responseLegs.duration,
-              origin: responseLegs.startLocation,
-              destination: responseLegs.endLocation,
+              origin: responseLegs.startLocation.latLng,
+              destination: responseLegs.endLocation.latLng,
               routeResponse: response.data
             }
 

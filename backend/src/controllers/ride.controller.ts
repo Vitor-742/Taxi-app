@@ -56,8 +56,6 @@ class RideController {
 
             const estimateResponse = await this.rideService.estimate(req.body);
 
-            console.log(estimateResponse)
-
             res.status(200).json(estimateResponse)
         } catch (error) {
             console.log(error)
@@ -72,12 +70,37 @@ class RideController {
         }
 
         try {
-
             const confirmResponse = await this.rideService.confirm(req.body);
 
-            console.log(confirmResponse)
-
             res.status(200).json(confirmResponse)
+        } catch (error) {
+            if ((error as ICustomError).status && (error as ICustomError).error_code && (error as ICustomError).error_description) {
+                const { status, error_code, error_description } = error as ICustomError;
+
+                res.status(status).json({error_code, error_description})
+                
+              } else {
+                console.error(error);
+        }
+    }
+    }
+
+    async listTravels(req: Request, res: Response, _next: NextFunction) {
+        const customerId = req.params.customer_id;
+        const driverId = req.query.driver_id;
+ 
+        try {
+
+            const rides = await this.rideService.getTravels(customerId, driverId as string);
+            const cleanRideList = [];
+
+            for (const ride of rides) {
+                const rideJSON = ride.toJSON();
+                const { driverId, userId, ...cleanRide } = rideJSON
+                cleanRideList.push(cleanRide)
+            }
+
+            res.status(200).json({ customer_id: customerId, rides: cleanRideList})
         } catch (error) {
             if ((error as ICustomError).status && (error as ICustomError).error_code && (error as ICustomError).error_description) {
                 const { status, error_code, error_description } = error as ICustomError;

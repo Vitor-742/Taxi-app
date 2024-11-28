@@ -26,6 +26,15 @@ class DriverService {
         const drivers = await this.model.findAll();
         return drivers
     }
+
+    async getById(id: string) {
+
+      const driver = await this.model.findByPk(id, {
+        attributes: ['id'],
+    });
+
+      return driver
+  }
 }
 
 export default DriverService;
