@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   app:
-    image: node:18  # Mudar versao do node
+    image: node:18
     working_dir: /app
     volumes:
       - ./backend:/app
