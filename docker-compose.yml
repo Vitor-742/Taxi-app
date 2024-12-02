@@ -29,3 +29,11 @@ services:
       timeout: 1s
       retries: 10
       interval: 2s
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
