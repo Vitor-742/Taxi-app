@@ -10,10 +10,12 @@ function Home() {
     const [estimateResponse, setEstimateResponse] = useState({})
 
     async function handleEstimateValue() {
-        const response = await estimateValue(customerId, originAddress, destinationAddress);
-        setEstimateResponse(response)
-
-        console.log(response)
+        try {
+            const response = await estimateValue(customerId, originAddress, destinationAddress);
+            if (response) setEstimateResponse(response) 
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 
@@ -23,7 +25,7 @@ function Home() {
         <h1>Escolha seu destino</h1>
 
         <div className="inputs">
-            <p>Id do cliente:</p>
+            <p>ID do cliente:</p>
             <input
             type="text"
             value={customerId}
@@ -54,7 +56,7 @@ function Home() {
 
                     {estimateResponse.options.map((driver) => (
 
-                        <Card driver={driver} travelInfo={{customerId, originAddress, destinationAddress, estimateResponse}} />
+                        <Card key={driver.id} driver={driver} travelInfo={{customerId, originAddress, destinationAddress, estimateResponse}} />
                     ))}
 
                     </div>

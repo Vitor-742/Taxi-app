@@ -8,7 +8,12 @@ export const Card = ({ driver, travelInfo }) => {
   const { description, name, review: { rating, comment }, value, vehicle } = driver;
 
   async function handleChooseTravel() {
-    const response = await confirmTravel(driver, travelInfo)
+    try {
+      await confirmTravel(driver, travelInfo)
+    } catch (error) {
+      console.log(error)
+    }
+    
 
     navigate("/travels")
   }
@@ -18,12 +23,12 @@ export const Card = ({ driver, travelInfo }) => {
     <div className="driverCard">
           <h4>{name}</h4>
           <p>{description}</p>
+          <h5>Carro:</h5>
           <p>{vehicle}</p>
           <h5>Last review:</h5>
-          <p>{rating}/5</p>
-          <p>{comment}</p>
+          <p>{rating}/5 - {comment}</p>
           <h5>Valor final da corrida:</h5>
-          <p>{value}</p>
+          <p>{value.toFixed(2)}</p>
           <button
             onClick={handleChooseTravel}
           >Escolher</button>

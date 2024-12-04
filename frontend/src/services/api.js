@@ -14,7 +14,9 @@ export const estimateValue = async (customerId, originAddress, destinationAddres
         return response.data;
         
     } catch (error) {
-        console.error(error.message);
+        if (error.response) {
+            alert(error.response.data.error_description);
+        }
     }
 }
 
@@ -55,6 +57,25 @@ export const confirmTravel = async (
         return response.data;
         
     } catch (error) {
-        console.error(error.message);
+        if (error.response) {
+            alert(error.response.data.error_description);
+        }
+    }
+}
+
+export const getTravels = async (customerId, driverId) => {
+
+    const urlString = `http://localhost:8080/ride/${customerId}?driver_id=${driverId}`
+
+
+    try {
+
+        const response = await axios.get(urlString);
+        return response.data;
+        
+    } catch (error) {
+        if (error.response) {
+            alert(error.response.data.error_description);
+        }
     }
 }

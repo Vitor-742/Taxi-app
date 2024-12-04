@@ -21,3 +21,8 @@ code {
   gap: 10px;
   width: 70%;
 }
+
+.searchRides {
+  display: flex;
+  gap: 5px;
+}
